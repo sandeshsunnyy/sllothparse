@@ -72,6 +72,18 @@ class PDFParser:
         largestFontSize = sorted(fontList, key= lambda item: item[0], reverse= False)[-1][0]
         return largestFontSize
     
+    def getStyleTuples(self, blocks: list[dir]):
+        list_of_styles = []
+        for block in blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        size = span["size"]
+                        color = span["color"]
+                        font = span["font"]
+                        list_of_styles.append((size, color, font))
+        return list_of_styles
+
     def tagPages(self, common_font_size: int, blocks: list[dict]) -> list[dict]:
         """
         Tagging will be done in a simple manner for now. We will consider each block, and take the first span. The font_size of the
