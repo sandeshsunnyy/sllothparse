@@ -25,10 +25,8 @@ def main():
             blocks = page.get_text('dict')
             sorted_blocks = sorted(blocks["blocks"], key=lambda b: (b["bbox"][1], b["bbox"][0]))
             parser = PDFParser(sorted_blocks)
-            common_font_size = parser.findCommonFontSize(sorted_blocks) # we got the best thing (for now) for identifying headings from paragraphs.
-            common_font_color = parser.findCommonFontColor(sorted_blocks)
-            largest_font_size = parser.getLargestSize(sorted_blocks)
-            print(f"{common_font_size=} {common_font_color=} {largest_font_size=}")
+            style_tuples = parser.getStyleTuples(blocks=sorted_blocks)
+            print(style_tuples)
             '''tagged_spans = parser.tagPages(common_font_size=common_font_size, blocks=sorted_blocks)
             current_dict, current_chunk_no = parser.createDict(previous_dict=previous_dict, previous_chunk_no=previous_chunk_no, tagged_spans=tagged_spans)
             previous_dict, previous_chunk_no = current_dict, current_chunk_no'''

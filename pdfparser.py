@@ -5,72 +5,6 @@ class PDFParser:
     def __init__(self, page_data: list[dict]):
         self.page_data = page_data
 
-
-    def findCommonFontSize(self, blocks: list[dict]) -> int:
-
-        font_sizes = []
-        
-        
-        for block in blocks:
-            if "lines" in block:
-                for line in block["lines"]:
-                    for span in line["spans"]:
-                        font_sizes.append(round(span["size"]))
-
-        if not font_sizes:
-            return 0
-        
-        common_font_size = collections.Counter(font_sizes).most_common(1)[0][0]
-        return common_font_size
-    
-    def findCommonFontColor(self, blocks: list[dict]) -> str:
-
-        font_colours = []
-
-        for block in blocks:
-            if "lines" in block:
-                for line in block["lines"]:
-                    for span in line["spans"]:
-                        font_colours.append(span["color"])
-
-        if not font_colours:
-            return ""
-        
-        print(font_colours)
-        
-        common_font_color = collections.Counter(font_colours).most_common(1)[0][0]
-        
-
-    def firstSpanSize(self, blocks: list[dir]) -> float:
-
-        #IMPORTANT: only after sorting
-        first_span_size = round(blocks["blocks"][0]["lines"][0]["spans"][0]["size"])
-
-        return first_span_size
-
-    def firstSpanColor(self, blocks: list[dir]) -> str:
-
-        #IMPORTANT: only after sorting
-        first_span_color = blocks["blocks"][0]["lines"][0]["spans"][0]["color"]
-
-        return first_span_color
-    
-    def getLargestSize(self, blocks: list[dir]):
-
-        list_of_font_sizes= []
-
-        for block in blocks:
-            if "lines" in block:
-                for line in block["lines"]:
-                    for span in line["spans"]:
-                        list_of_font_sizes.append(round(span["size"]))
-
-        if not list_of_font_sizes:
-            return 0
-    
-        fontList = collections.Counter(list_of_font_sizes).most_common()
-        largestFontSize = sorted(fontList, key= lambda item: item[0], reverse= False)[-1][0]
-        return largestFontSize
     
     def getStyleTuples(self, blocks: list[dir]):
         list_of_styles = []
@@ -231,3 +165,70 @@ class PDFParser:
     
 
 
+'''
+def findCommonFontSize(self, blocks: list[dict]) -> int:
+
+        font_sizes = []
+        
+        
+        for block in blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        font_sizes.append(round(span["size"]))
+
+        if not font_sizes:
+            return 0
+        
+        common_font_size = collections.Counter(font_sizes).most_common(1)[0][0]
+        return common_font_size
+    
+    def findCommonFontColor(self, blocks: list[dict]) -> str:
+
+        font_colours = []
+
+        for block in blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        font_colours.append(span["color"])
+
+        if not font_colours:
+            return ""
+        
+        print(font_colours)
+        
+        common_font_color = collections.Counter(font_colours).most_common(1)[0][0]
+        
+
+    def firstSpanSize(self, blocks: list[dir]) -> float:
+
+        #IMPORTANT: only after sorting
+        first_span_size = round(blocks["blocks"][0]["lines"][0]["spans"][0]["size"])
+
+        return first_span_size
+
+    def firstSpanColor(self, blocks: list[dir]) -> str:
+
+        #IMPORTANT: only after sorting
+        first_span_color = blocks["blocks"][0]["lines"][0]["spans"][0]["color"]
+
+        return first_span_color
+    
+    def getLargestSize(self, blocks: list[dir]):
+
+        list_of_font_sizes= []
+
+        for block in blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        list_of_font_sizes.append(round(span["size"]))
+
+        if not list_of_font_sizes:
+            return 0
+    
+        fontList = collections.Counter(list_of_font_sizes).most_common()
+        largestFontSize = sorted(fontList, key= lambda item: item[0], reverse= False)[-1][0]
+        return largestFontSize
+'''
