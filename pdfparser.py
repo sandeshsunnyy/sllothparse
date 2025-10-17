@@ -17,6 +17,68 @@ class PDFParser:
                         font = span["font"]
                         list_of_styles.append((size, color, font))
         return list_of_styles
+    
+    def getCommonStyleTuple(self, all_styles:list[tuple]):
+        self.most_common = collections.Counter(all_styles).most_common(1)[0][0]# do something for heading and sub-headings (quick-thought: count-based?)
+    
+
+    def sortAndArrangeDistinctStyles(self, all_styles) -> tuple:
+        distinct_styles = list(set(all_styles))
+        print(distinct_styles) # we got distinct styles
+
+        #check for same font over all fonts if it is same fonts then a different logic has to be font. 
+        self.sorted_styles_on_size = sorted(distinct_styles, key= lambda item: (item[0], item[1]), reverse=True)
+        #Even after sorting if it is the same size then we should look for other ways to find semantics.
+        print(self.sorted_styles_on_size)
+
+        #divide the tuples into different groups based on whether it is in the same level as common text. In the group having the common tuple, place it at the very end. Anything below the common font should be handled carefully.
+        ix = self.sorted_styles_on_size.index(self.most_common)
+        larger, same, smaller = [], [], []
+        for index, style_tuple in enumerate(self.sorted_styles_on_size):
+            if index == ix:
+                continue
+            if style_tuple[0] == self.most_common[0]:
+                same.append(style_tuple)
+            elif style_tuple[0] > self.most_common[0]:
+                larger.append(style_tuple)
+            else:
+                smaller.append(style_tuple)
+        same.append(self.most_common)
+
+        return larger, same, smaller
+        
+    def getCountsOfStyles(self, all_styles):
+        counts = collections.Counter(all_styles)
+        style_to_count = [(style, counts[style]) for style in self.sorted_styles_on_size]
+        print(sorted(style_to_count, key=lambda item: item[1], reverse=True))
+
+        #try with manual method, if its not that good, might have to resort to LLM-based semantic analysis. The key is not to overload the LLM, but ask it why the style tuples are used. 
+    def assignTagsToStyles(self, larger: list[tuple], same: list[tuple], smaller: list[tuple]):
+        tag_map = {}
+        for i, tuple in enumerate(larger, 1):
+            tag_map[tuple] = f"h{i}"
+    
+        for i, tuple in enumerate(same, 1):
+            if tuple == self.most_common:
+                tag_map[tuple] = "p"
+            else:
+                tag_map[tuple] = f"sh{i}"
+        
+        for i, tuple in enumerate(smaller, 1):
+            tag_map[tuple] = "p"
+
+        self.tag_map = tag_map
+
+    @staticmethod
+    def showSpans(all_blocks):
+        for block in all_blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        if span["text"].endswith("\n"):
+                            print("\nBreak Line\n")
+                        else:
+                            print(span["text"] + "\n")
 
     def tagPages(self, common_font_size: int, blocks: list[dict]) -> list[dict]:
         """
