@@ -36,6 +36,7 @@ def main():
         larger, same, smaller = parser.sortAndArrangeDistinctStyles(all_styles=all_styles)
         parser.assignTagsToStyles(larger=larger, same=same, smaller=smaller)
         #assigning complete. Now next level of checking where we check for sub-heading
+        parser.showSpans(all_blocks=all_blocks)
 
     except FileNotFoundError:
         print("File not found!")

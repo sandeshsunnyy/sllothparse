@@ -1,4 +1,5 @@
 import collections
+import re
 
 class PDFParser:
 
@@ -70,15 +71,26 @@ class PDFParser:
         self.tag_map = tag_map
 
     @staticmethod
-    def showSpans(all_blocks):
+    def check_for_subheading(text: str) -> bool:
+        pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
+
+        return True if pattern.match(text) else False
+    
+    def showSpans(self, all_blocks):
         for block in all_blocks:
             if "lines" in block:
                 for line in block["lines"]:
                     for span in line["spans"]:
-                        if span["text"].endswith("\n"):
-                            print("\nBreak Line\n")
-                        else:
-                            print(span["text"] + "\n")
+                        size = span["size"]
+                        color = span["color"]
+                        font = span["font"]
+                        style_tuple = (size, color, font)
+                        tag = self.tag_map[style_tuple]
+                        if tag[:2] == "sh":
+                            if not self.check_for_subheading(span["text"]):
+                                tag = "p"
+                        final_text = f"<{tag}> {span["text"]} </{tag}>\n"
+                        print(final_text)
 
     def tagPages(self, common_font_size: int, blocks: list[dict]) -> list[dict]:
         """
