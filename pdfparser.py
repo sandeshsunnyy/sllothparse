@@ -72,11 +72,20 @@ class PDFParser:
 
     @staticmethod
     def check_for_subheading(text: str) -> bool:
-        pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
 
-        return True if pattern.match(text) else False
-    
-    def showSpans(self, all_blocks):
+        #regular expression for most common starting characters
+        pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
+        if pattern.match(text):
+            return True
+        elif not pattern.match(text) and text.endswith("."):
+            return True
+        else: 
+            return False
+
+
+    def tagSpans(self, all_blocks):
+
+        tagged_spans = []
         for block in all_blocks:
             if "lines" in block:
                 for line in block["lines"]:
@@ -84,14 +93,23 @@ class PDFParser:
                         size = span["size"]
                         color = span["color"]
                         font = span["font"]
+                        text = span["text"]
                         style_tuple = (size, color, font)
                         tag = self.tag_map[style_tuple]
                         if tag[:2] == "sh":
-                            if not self.check_for_subheading(span["text"]):
+                            if not self.check_for_subheading(text=text):
                                 tag = "p"
-                        final_text = f"<{tag}> {span["text"]} </{tag}>\n"
-                        print(final_text)
-
+                        
+                        span_object = {
+                            "tag" : tag,
+                            "content": text,
+                            "style_tuple": style_tuple
+                        }
+                        tagged_spans.append(span_object)
+                        
+                        
+                
+    '''
     def tagPages(self, common_font_size: int, blocks: list[dict]) -> list[dict]:
         """
         Tagging will be done in a simple manner for now. We will consider each block, and take the first span. The font_size of the
@@ -197,7 +215,7 @@ class PDFParser:
                 }
                 previous_chunk_no += 1
 
-        return previous_dict, previous_chunk_no
+        return previous_dict, previous_chunk_no'''
 
 
     #TODO: Process chunks, add line breaks as necessary. 
