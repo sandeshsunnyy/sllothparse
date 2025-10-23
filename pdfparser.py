@@ -67,6 +67,8 @@ class PDFParser:
         
         for i, tuple in enumerate(smaller, 1):
             tag_map[tuple] = "p"
+        
+        print(tag_map)
 
         self.tag_map = tag_map
 
@@ -106,9 +108,36 @@ class PDFParser:
                             "style_tuple": style_tuple
                         }
                         tagged_spans.append(span_object)
+        self.tagged_spans = tagged_spans
+        return tagged_spans
                         
                         
-                
+    def createSemanticParaChunks(self):
+        paragraph = ""
+        chunks = {}
+        chunk_no = 0
+        for span_object in self.tagged_spans:
+            current_tag = span_object["tag"]
+            if current_tag[0] == 'h' or current_tag[:2] == 'sh':
+                if paragraph:
+                    chunk_name = f'chunk {chunk_no}'
+                    chunks[chunk_name] = {
+                        'tag' : 'p',
+                        'content' : paragraph
+                        }
+                    chunk_no += 1
+
+                chunk_name = f'chunk {chunk_no}'
+                chunks[chunk_name] = {
+                    'tag' : current_tag,
+                    'content': span_object["content"]
+                }
+                chunk_no +=1
+            else:
+                paragraph += span_object["content"]
+
+        return chunks
+
     '''
     def tagPages(self, common_font_size: int, blocks: list[dict]) -> list[dict]:
         """

@@ -1,7 +1,6 @@
 from pdfparser import PDFParser
 import fitz
 import traceback
-import collections
 
 """
 1. Take out text
@@ -36,7 +35,11 @@ def main():
         larger, same, smaller = parser.sortAndArrangeDistinctStyles(all_styles=all_styles)
         parser.assignTagsToStyles(larger=larger, same=same, smaller=smaller)
         #assigning complete. Now next level of checking where we check for sub-heading
-        parser.showSpans(all_blocks=all_blocks)
+        tagged_spans = parser.tagSpans(all_blocks=all_blocks)
+        chunks = parser.createSemanticParaChunks()
+
+
+        print([item.get("tag") for item in chunks.values()])
 
     except FileNotFoundError:
         print("File not found!")
