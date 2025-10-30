@@ -36,10 +36,9 @@ def main():
         parser.assignTagsToStyles(larger=larger, same=same, smaller=smaller)
         #assigning complete. Now next level of checking where we check for sub-heading
         tagged_spans = parser.tagSpans(all_blocks=all_blocks)
-        chunks = parser.createSemanticParaChunks()
-
-
-        print([item.get("tag") for item in chunks.values()])
+        chunks = parser.createTaggedChunks()
+        parser.createSemanticChunks()
+        print(parser.all_semantic_chunks)
 
     except FileNotFoundError:
         print("File not found!")
