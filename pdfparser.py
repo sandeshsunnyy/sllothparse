@@ -186,6 +186,7 @@ class PDFParser:
                     current_semantic_chunk[tag] = content
         
         if same_topic:
+            print("same topic exists")
             for chunk in same_topic:
                 key = f"Chunk {semantic_chunks_no}"
                 all_semantic_chunks[key] = chunk
@@ -193,8 +194,9 @@ class PDFParser:
                 same_topic = []
                 semantic_chunks_no += 1
         if current_semantic_chunk:
+            print('last chunk')
             key = f"Chunk {semantic_chunks_no}"
-            all_semantic_chunks[key] = chunk
+            all_semantic_chunks[key] = current_semantic_chunk
         
         self.all_semantic_chunks = all_semantic_chunks
         return all_semantic_chunks

@@ -18,9 +18,6 @@ def main():
     try:
         
         pages = fitz.open(pdf_path)
-
-        previous_dict = {} 
-        previous_chunk_no = None
         all_styles = []
         all_blocks = []
         for page in pages:
@@ -38,7 +35,11 @@ def main():
         tagged_spans = parser.tagSpans(all_blocks=all_blocks)
         chunks = parser.createTaggedChunks()
         parser.createSemanticChunks()
-        print(parser.all_semantic_chunks)
+        list_of_keys = list(parser.all_semantic_chunks.keys())[::-1]
+        for key in list_of_keys:
+            chunk = parser.all_semantic_chunks[key]
+            print("\n")
+            print(chunk)
 
     except FileNotFoundError:
         print("File not found!")
