@@ -35,11 +35,11 @@ def main():
         tagged_spans = parser.tagSpans(all_blocks=all_blocks)
         chunks = parser.createTaggedChunks()
         parser.createSemanticChunks()
-        list_of_keys = list(parser.all_semantic_chunks.keys())[::-1]
-        for key in list_of_keys:
-            chunk = parser.all_semantic_chunks[key]
+        for chunk in parser.all_semantic_chunks:
+            print(f"\n{chunk}\n")
+            print(parser.all_semantic_chunks[chunk])
             print("\n")
-            print(chunk)
+
 
     except FileNotFoundError:
         print("File not found!")

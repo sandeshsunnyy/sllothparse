@@ -25,13 +25,9 @@ class PDFParser:
 
     def sortAndArrangeDistinctStyles(self, all_styles) -> tuple:
         distinct_styles = list(set(all_styles))
-        print(distinct_styles) # we got distinct styles
-
         #check for same font over all fonts if it is same fonts then a different logic has to be font. 
         self.sorted_styles_on_size = sorted(distinct_styles, key= lambda item: (item[0], item[1]), reverse=True)
         #Even after sorting if it is the same size then we should look for other ways to find semantics.
-        print(self.sorted_styles_on_size)
-
         #divide the tuples into different groups based on whether it is in the same level as common text. In the group having the common tuple, place it at the very end. Anything below the common font should be handled carefully.
         ix = self.sorted_styles_on_size.index(self.most_common)
         larger, same, smaller = [], [], []
@@ -128,6 +124,7 @@ class PDFParser:
                         'content' : paragraph
                         }
                     chunk_no += 1
+                    paragraph = ""
 
                 chunk_name = f'chunk {chunk_no}'
                 chunks[chunk_name] = {
@@ -135,11 +132,12 @@ class PDFParser:
                     'content': span_object["content"]
                 }
                 chunk_no +=1
+                paragraph = ""
             else:
                 paragraph += span_object["content"]
         chunk_name = f'chunk {chunk_no}'
         chunks[chunk_name] = {
-            'tag' : 'p',
+            'tag' : current_tag,
             'content' : paragraph
             }
         self.chunks = chunks
@@ -161,6 +159,7 @@ class PDFParser:
                 if current_semantic_chunk:
                     same_topic.append(current_semantic_chunk)
                     current_semantic_chunk = {}
+                    current_semantic_chunk[tag] = content
                 else:
                     current_semantic_chunk[tag] = content
             elif tag[:2] == 'sh':
@@ -178,6 +177,15 @@ class PDFParser:
                         current_semantic_chunk = {}
                         same_topic = []
                         semantic_chunks_no += 1
+                else:
+                    if current_semantic_chunk:
+                        current_semantic_chunk[tag] = content
+                        key = f"Chunk {semantic_chunks_no}"
+                        all_semantic_chunks[key] = current_semantic_chunk
+                        current_semantic_chunk = {}
+                        semantic_chunks_no += 1
+                    else:
+                        current_semantic_chunk[tag] = content
 
             elif tag[:1] == 'h':
                 if not current_semantic_chunk:
