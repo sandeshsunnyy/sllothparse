@@ -10,8 +10,8 @@ import traceback
 5. We can do analysis of common patterns
 """
 
-pdf_path = "12 SEPTEMBER 2025.pdf"
-
+#pdf_path = "12 SEPTEMBER 2025.pdf"
+pdf_path = '/Users/sandeshsunny/Downloads/UP TOPIC SEGREGATION.pdf'
 
 def main():
 
@@ -30,7 +30,7 @@ def main():
         parser = PDFParser(all_blocks)
         parser.getCommonStyleTuple(all_styles=all_styles)
         larger, same, smaller = parser.sortAndArrangeDistinctStyles(all_styles=all_styles)
-        parser.assignTagsToStyles(larger=larger, same=same, smaller=smaller)
+        parser.assignTagsToStyles()
         #assigning complete. Now next level of checking where we check for sub-heading
         tagged_spans = parser.tagSpans(all_blocks=all_blocks)
         chunks = parser.createTaggedChunks()

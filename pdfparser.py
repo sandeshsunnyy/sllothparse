@@ -52,19 +52,29 @@ class PDFParser:
         print(sorted(style_to_count, key=lambda item: item[1], reverse=True))
 
         #try with manual method, if its not that good, might have to resort to LLM-based semantic analysis. The key is not to overload the LLM, but ask it why the style tuples are used. 
-    def assignTagsToStyles(self, larger: list[tuple], same: list[tuple], smaller: list[tuple]):
+    def assignTagsToStyles(self): # check if the larger list or the smaller list is empty, based on that we need to decide whether to assign subheadings. 
         tag_map = {}
-        for i, tuple in enumerate(larger, 1):
-            tag_map[tuple] = f"h{i}"
-    
-        for i, tuple in enumerate(same, 1):
-            if tuple == self.most_common:
-                tag_map[tuple] = "p"
-            else:
-                tag_map[tuple] = f"sh{i}"
+        if self.larger:
+            for i, tuple in enumerate(self.larger, 1):
+                tag_map[tuple] = f"h{i}"
         
-        for i, tuple in enumerate(smaller, 1):
-            tag_map[tuple] = "p"
+            for i, tuple in enumerate(self.same, 1):
+                if tuple == self.most_common:
+                    tag_map[tuple] = "p"
+                else:
+                    tag_map[tuple] = f"sh{i}"
+            
+            for i, tuple in enumerate(self.smaller, 1):
+                tag_map[tuple] = "p"
+        else:
+            for i, tuple in enumerate(self.same, 1):
+                if tuple == self.most_common:
+                    tag_map[tuple] = "p"
+                else:
+                    tag_map[tuple] = f"h{i}"
+            
+            for i, tuple in enumerate(self.smaller, 1):
+                tag_map[tuple] = "p"
         
         print(tag_map)
 
@@ -117,6 +127,7 @@ class PDFParser:
         for span_object in self.tagged_spans:
             current_tag = span_object["tag"]
             if current_tag[0] == 'h' or current_tag[:2] == 'sh':
+                print("Got anchor tag!!")
                 if paragraph:
                     chunk_name = f'chunk {chunk_no}'
                     chunks[chunk_name] = {
@@ -144,8 +155,9 @@ class PDFParser:
         return chunks
 
     def createSemanticChunks(self):
-
-        anchor_tag = self.tag_map[self.larger[0]]
+        anchor_tuple = self.larger + self.same + self.smaller
+        anchor_tag = self.tag_map[anchor_tuple[0]]
+        print(f'{anchor_tuple=} {anchor_tag=}')
         reversed_list = list(self.chunks.keys())[::-1]
         all_semantic_chunks = {}
         semantic_chunks_no = 0
@@ -213,3 +225,4 @@ class PDFParser:
         self.all_semantic_chunks = all_semantic_chunks
         return all_semantic_chunks
             
+#TODO: Problems what if headings are not there? The subheadings does not automatically become headings. Ultimately, we should get rid of the larger, same and smaller list and use a single one.
