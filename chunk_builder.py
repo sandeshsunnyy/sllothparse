@@ -28,13 +28,14 @@ def main():
             all_styles += parser.getStyleTuples(blocks=sorted_blocks)
             
         parser = PDFParser(all_blocks)
-        parser.getCommonStyleTuple(all_styles=all_styles)
+        parser.getMostCommonStyleTuple(all_styles=all_styles)
         larger, same, smaller = parser.sortAndArrangeDistinctStyles(all_styles=all_styles)
         parser.assignTagsToStyles()
         #assigning complete. Now next level of checking where we check for sub-heading
-        tagged_spans = parser.tagSpans(all_blocks=all_blocks)
+        tagged_lines = parser.tagLines(all_blocks=all_blocks)
         chunks = parser.createTaggedChunks()
         parser.createSemanticChunks()
+
         for chunk in parser.all_semantic_chunks:
             print(f"\n{chunk}\n")
             print(parser.all_semantic_chunks[chunk])

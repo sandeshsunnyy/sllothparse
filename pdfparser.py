@@ -19,10 +19,14 @@ class PDFParser:
                         list_of_styles.append((size, color, font))
         return list_of_styles
     
-    def getCommonStyleTuple(self, all_styles:list[tuple]):
-        self.most_common = collections.Counter(all_styles).most_common(1)[0][0]# do something for heading and sub-headings (quick-thought: count-based?)
+    @staticmethod
+    def getCommonStyleTuple(style_tuples: list[tuple]):
+        return collections.Counter(style_tuples).most_common(1)[0][0]
     
+    def getMostCommonStyleTuple(self, all_styles:list[tuple]):
+        self.most_common = self.getCommonStyleTuple(style_tuples=all_styles) # do something for heading and sub-headings (quick-thought: count-based?)
 
+    
     def sortAndArrangeDistinctStyles(self, all_styles) -> tuple:
         distinct_styles = list(set(all_styles))
         #check for same font over all fonts if it is same fonts then a different logic has to be font. 
@@ -93,12 +97,14 @@ class PDFParser:
             return False
 
 
-    def tagSpans(self, all_blocks):
+    def tagLines(self, all_blocks):
 
-        tagged_spans = []
+        tagged_lines = []
         for block in all_blocks:
             if "lines" in block:
                 for line in block["lines"]:
+                    tuples = []
+                    line_content = []
                     for span in line["spans"]:
                         size = span["size"]
                         color = span["color"]
@@ -109,25 +115,31 @@ class PDFParser:
                         if tag[:2] == "sh":
                             if not self.check_for_subheading(text=text):
                                 tag = "p"
-                        
-                        span_object = {
-                            "tag" : tag,
-                            "content": text,
-                            "style_tuple": style_tuple
-                        }
-                        tagged_spans.append(span_object)
-        self.tagged_spans = tagged_spans
-        return tagged_spans
+                        #Tryning to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
+                        #For bold and italics a different logic is needed. Like wraping the text in '*' or something
+                        tuples.append(style_tuple)
+                        line_content.append(text)
+                    content = ' '.join(line_content)
+                    content += '\n'
+                    common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
+                    common_tag = self.tag_map[common_tuple]
+                    line_object = {
+                        "tag" : common_tag,
+                        "content": content,
+                        "style_tuple": common_tuple
+                    }
+                    tagged_lines.append(line_object)
+        self.tagged_lines = tagged_lines
+        return tagged_lines
                         
                         
     def createTaggedChunks(self):
         paragraph = ""
         chunks = {}
         chunk_no = 0
-        for span_object in self.tagged_spans:
+        for span_object in self.tagged_lines:
             current_tag = span_object["tag"]
             if current_tag[0] == 'h' or current_tag[:2] == 'sh':
-                print("Got anchor tag!!")
                 if paragraph:
                     chunk_name = f'chunk {chunk_no}'
                     chunks[chunk_name] = {
@@ -157,7 +169,6 @@ class PDFParser:
     def createSemanticChunks(self):
         anchor_tuple = self.larger + self.same + self.smaller
         anchor_tag = self.tag_map[anchor_tuple[0]]
-        print(f'{anchor_tuple=} {anchor_tag=}')
         reversed_list = list(self.chunks.keys())[::-1]
         all_semantic_chunks = {}
         semantic_chunks_no = 0
@@ -226,3 +237,4 @@ class PDFParser:
         return all_semantic_chunks
             
 #TODO: Problems what if headings are not there? The subheadings does not automatically become headings. Ultimately, we should get rid of the larger, same and smaller list and use a single one.
+#TODO: We can identify the lines, of a PDF. That way we can add line breaks to the last span text. To indicate a line break. 
