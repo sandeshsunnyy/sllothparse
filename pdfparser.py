@@ -237,6 +237,3 @@ class PDFParser:
         
         self.all_semantic_chunks = all_semantic_chunks
         return all_semantic_chunks
-            
-#TODO: Problems what if headings are not there? The subheadings does not automatically become headings. Ultimately, we should get rid of the larger, same and smaller list and use a single one.
-#TODO: We can identify the lines, of a PDF. That way we can add line breaks to the last span text. To indicate a line break. 
