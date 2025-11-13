@@ -191,6 +191,7 @@ class PDFParser:
                 else:
                     current_semantic_chunk[tag] = content
             elif tag == anchor_tag:
+                # for previous chunks
                 if same_topic:
                     for chunk in same_topic:
                         chunk[tag] = content
@@ -199,12 +200,13 @@ class PDFParser:
                         all_semantic_chunks[key] = chunk
                         same_topic = []
                         semantic_chunks_no += 1
-                    key = f"Chunk {semantic_chunks_no}"
+                    # for current chunk
+                    key = f"Chunk {semantic_chunks_no}" 
                     current_semantic_chunk[tag] = content
                     all_semantic_chunks[key] = current_semantic_chunk
                     current_semantic_chunk = {}
                     semantic_chunks_no +=1
-                else:
+                else: 
                     if current_semantic_chunk:
                         current_semantic_chunk[tag] = content
                         key = f"Chunk {semantic_chunks_no}"
