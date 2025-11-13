@@ -55,17 +55,26 @@ class DocumentHandler:
         except Exception as e:
             print(f"Error: While creating semantic chunks: {e}")
             return None
+        
+    def parse_doc(self):
+        """
+        Handles all operations by itself
+        """
+        all_blocks, all_styles = self.get_all_blocks_and_style_info()
+        self.tag_parts(all_blocks=all_blocks, all_styles=all_styles)
+        all_semantic_chunks = self.get_parsed_chunks()
+        return all_semantic_chunks
+    
 
 if __name__ == "__main__":
     #pdf_path = "12 SEPTEMBER 2025.pdf"
     pdf_path = '/Users/sandeshsunny/Downloads/UP TOPIC SEGREGATION.pdf'
     doc_handler = DocumentHandler(pdf_path=pdf_path)
-    all_blocks, all_styles = doc_handler.get_all_blocks_and_style_info()
-    doc_handler.tag_parts(all_blocks=all_blocks, all_styles=all_styles)
-    all_semantic_chunks = doc_handler.get_parsed_chunks()
+    all_semantic_chunks = doc_handler.parse_doc()
 
     # Alternatively, the semantic chunks are available within the parser as variable all_semantic_chunks
-    for chunk in all_semantic_chunks:
-            print(f"\n{chunk}\n")
-            print(all_semantic_chunks[chunk])
-            print("\n")
+    #doc_handler.parser.view_chunks()
+    all_paragraphs = doc_handler.parser.get_only_paragraphs()
+    print(all_paragraphs)
+
+    

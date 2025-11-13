@@ -237,3 +237,20 @@ class PDFParser:
         
         self.all_semantic_chunks = all_semantic_chunks
         return all_semantic_chunks
+    
+    def view_chunks(self):
+        for chunk in self.all_semantic_chunks:
+            print(f"\n{chunk}\n")
+            print(self.all_semantic_chunks[chunk])
+            print("\n")
+    
+    def get_only_paragraphs(self):
+
+        all_paragraphs = ""
+        for chunk_key in self.all_semantic_chunks:
+            chunk = self.all_semantic_chunks[chunk_key]
+        
+            chunk_paragraph = chunk.get('p')
+            all_paragraphs += chunk_paragraph
+
+        return all_paragraphs
