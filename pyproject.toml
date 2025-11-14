@@ -1,0 +1,40 @@
+[build-system]
+# Specifies the tools needed to build your package
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# This is the core metadata for your project
+name = "sllothparse"
+version = "0.0.1"
+authors = [
+  # Add your name and email here
+  { name="Sandesh Varghese Sunny", email="sandeshsunny2020@gmail.com" },
+]
+description = "A document parser for text-based PDFs, inspired by LlamaIndex."
+readme = "README.md"  # Assumes you have a README.md file
+requires-python = ">=3.8"
+classifiers = [
+    # These help users find your project on PyPI (if you publish it)
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",  # You can change this
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing",
+    "Development Status :: 3 - Alpha",
+]
+
+# This is the key part!
+# It lists all the libraries your project needs to run.
+dependencies = [
+    "PyMuPDF"  # pip will automatically install this
+]
+
+[project.urls]
+# Optional: Links to your project's homepage and issue tracker
+Homepage = "https://github.com/sandeshsunnyy/sllothparse"
+Issues = "https://github.com/sandeshsunnyy/sllothparse/issues"
+
+[tool.setuptools.packages.find]
+# This tells the build system where to find your package code.
+# We're telling it to look inside the "src" directory.
+where = ["src"]

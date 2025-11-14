@@ -56,7 +56,7 @@ class DocumentHandler:
             print(f"Error: While creating semantic chunks: {e}")
             return None
         
-    def parse_doc(self):
+    def get_semantic_chunks(self):
         """
         Handles all operations by itself
         """
@@ -65,16 +65,9 @@ class DocumentHandler:
         all_semantic_chunks = self.get_parsed_chunks()
         return all_semantic_chunks
     
-'''
-if __name__ == "__main__":
-    #pdf_path = "12 SEPTEMBER 2025.pdf"
-    pdf_path = '/Users/sandeshsunny/Downloads/UP TOPIC SEGREGATION.pdf'
+def parse_pdf(pdf_path: str) -> dict:
     doc_handler = DocumentHandler(pdf_path=pdf_path)
     all_semantic_chunks = doc_handler.parse_doc()
 
-    # Alternatively, the semantic chunks are available within the parser as variable all_semantic_chunks
-    #doc_handler.parser.view_chunks()q
-    all_paragraphs = doc_handler.parser.get_only_paragraphs()
-    print(all_paragraphs)
-
+    return all_semantic_chunks
     
