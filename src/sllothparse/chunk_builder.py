@@ -1,6 +1,7 @@
 from pdfparser import PDFParser
 import fitz
 import traceback
+from src.sllothparse.utilities import get_arranged_keys
 
 class DocumentHandler:
     def __init__(self, pdf_path) -> None:
@@ -71,3 +72,16 @@ def parse_pdf(pdf_path: str) -> dict:
 
     return all_semantic_chunks
     
+
+#-------------------------------------------------------------------
+#                       Example usage
+#-------------------------------------------------------------------
+
+if __name__ == '__main__':
+    pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
+    semantic_chunks = parse_pdf(pdf_path=pdf_path)
+    for ix, chunk in semantic_chunks.items():
+        keys = get_arranged_keys(chunk=chunk)
+        for key in keys:
+            print(f"{key} : {chunk[key]}")
+        print("\n")

@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: sllothparse
+Version: 0.0.1
+Summary: A document parser for text-based PDFs, inspired by LlamaIndex.
+Author-email: Sandesh Varghese Sunny <sandeshsunny2020@gmail.com>
+Project-URL: Homepage, https://github.com/sandeshsunnyy/sllothparse
+Project-URL: Issues, https://github.com/sandeshsunnyy/sllothparse/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Text Processing
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: PyMuPDF

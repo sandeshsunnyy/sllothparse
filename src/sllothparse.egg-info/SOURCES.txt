@@ -1,0 +1,10 @@
+pyproject.toml
+src/sllothparse/__init__.py
+src/sllothparse/chunk_builder.py
+src/sllothparse/miscellaneous.py
+src/sllothparse/pdfparser.py
+src/sllothparse.egg-info/PKG-INFO
+src/sllothparse.egg-info/SOURCES.txt
+src/sllothparse.egg-info/dependency_links.txt
+src/sllothparse.egg-info/requires.txt
+src/sllothparse.egg-info/top_level.txt
