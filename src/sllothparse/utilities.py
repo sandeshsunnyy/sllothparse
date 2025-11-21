@@ -1,7 +1,6 @@
-from typing import Dict, List
 from itertools import chain
 
-def get_arranged_keys(chunk: Dict[str]) -> List[str]:
+def get_arranged_keys(chunk: dict) -> list[str]:
     """
     A helper function that arranges the keys of a dictionary according to semantics inherent
 
@@ -24,4 +23,4 @@ def get_arranged_keys(chunk: Dict[str]) -> List[str]:
         else: 
             paragraphs.append(chunk_key)
 
-    return chain(headings.sort(), subheadings.sort(), paragraphs.sort())
+    return chain(sorted(headings), sorted(subheadings), sorted(paragraphs))

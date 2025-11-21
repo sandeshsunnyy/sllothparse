@@ -1,7 +1,7 @@
-from pdfparser import PDFParser
+from sllothparse.pdfparser import PDFParser
 import fitz
 import traceback
-from src.sllothparse.utilities import get_arranged_keys
+from sllothparse.utilities import get_arranged_keys
 
 class DocumentHandler:
     def __init__(self, pdf_path) -> None:
@@ -68,7 +68,7 @@ class DocumentHandler:
     
 def parse_pdf(pdf_path: str) -> dict:
     doc_handler = DocumentHandler(pdf_path=pdf_path)
-    all_semantic_chunks = doc_handler.parse_doc()
+    all_semantic_chunks = doc_handler.get_semantic_chunks()
 
     return all_semantic_chunks
     
