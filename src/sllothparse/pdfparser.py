@@ -6,7 +6,6 @@ class PDFParser:
     def __init__(self, page_data: list[dict]):
         self.page_data = page_data
 
-    
     def getStyleTuples(self, blocks: list[dir]):
         list_of_styles = []
         for block in blocks:

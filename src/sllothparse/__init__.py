@@ -1,3 +1,3 @@
-from .chunk_builder import parse_pdf
+from sllothparse.chunk_builder import SimpleParser
 
-__all__ = ["parse_pdf"]
+__all__ = ["SimpleParser"]

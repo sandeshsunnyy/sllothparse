@@ -2,9 +2,25 @@ from sllothparse.pdfparser import PDFParser
 import fitz
 import traceback
 from sllothparse.utilities import get_arranged_keys
+from pathlib import Path
+from abc import ABC, abstractmethod
+from typing import TypeVar, Generic
 
-class DocumentHandler:
-    def __init__(self, pdf_path) -> None:
+R = TypeVar("R")
+
+class BaseParser(ABC, Generic[R]):
+    @abstractmethod
+    def parse(self) -> R:
+        pass
+
+    def __call__(self) -> R:
+        return self.parse()
+
+    def __invoke__(self) -> R:
+        return self.parse()
+
+class SimpleParser(BaseParser):
+    def __init__(self, pdf_path):
         try: 
             self.pages = fitz.open(pdf_path)
         except Exception as e:
@@ -57,7 +73,7 @@ class DocumentHandler:
             print(f"Error: While creating semantic chunks: {e}")
             return None
         
-    def get_semantic_chunks(self):
+    def parse(self):
         """
         Handles all operations by itself
         """
@@ -66,12 +82,6 @@ class DocumentHandler:
         all_semantic_chunks = self.get_parsed_chunks()
         return all_semantic_chunks
     
-def parse_pdf(pdf_path: str) -> dict:
-    doc_handler = DocumentHandler(pdf_path=pdf_path)
-    all_semantic_chunks = doc_handler.get_semantic_chunks()
-
-    return all_semantic_chunks
-    
 
 #-------------------------------------------------------------------
 #                       Example usage
@@ -79,7 +89,8 @@ def parse_pdf(pdf_path: str) -> dict:
 
 if __name__ == '__main__':
     pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
-    semantic_chunks = parse_pdf(pdf_path=pdf_path)
+    parser = SimpleParser(pdf_path=pdf_path)
+    semantic_chunks = parser()
     for ix, chunk in semantic_chunks.items():
         keys = get_arranged_keys(chunk=chunk)
         for key in keys:
