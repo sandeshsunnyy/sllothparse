@@ -119,7 +119,8 @@ class SimpleParser(BaseParser):
 #-------------------------------------------------------------------
 
 if __name__ == '__main__':
-    pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
+    #pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
+    pdf_path = '/Users/sandeshsunny/Downloads/distribution_sample_single_font_Arial.pdf'
     parser = SimpleParser(pdf_path=pdf_path)
     semantic_chunks = parser()
     parser.show_style_metadata()
@@ -128,3 +129,4 @@ if __name__ == '__main__':
         for key in keys:
             print(f"{key} : {chunk[key]}")
         print("\n")
+        break

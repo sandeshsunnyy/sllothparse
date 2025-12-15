@@ -89,12 +89,15 @@ class PDFParser:
     @staticmethod
     def check_for_subheading(text: str, font_style: str = None) -> bool:
 
+        delimiters = ('.', '?', '!', ';', ':')
         #regular expression for most common starting characters
         pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
         if pattern.match(text):
+            print(f"Matched pattern is: {pattern.match(text).group(0)}"
+                  f"Text is: {text}")
             return True
         elif not pattern.match(text):
-            if font_style.__contains__("Bold"):
+            if font_style.__contains__("Bold") and not text.strip().endswith(delimiters):
                 return True
             else:
                 return False
