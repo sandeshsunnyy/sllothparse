@@ -25,9 +25,12 @@ class PDFParser:
     def getMostCommonStyleTuple(self, all_styles:list[tuple]):
         self.most_common = self.getCommonStyleTuple(style_tuples=all_styles) # do something for heading and sub-headings (quick-thought: count-based?)
 
+    @staticmethod
+    def return_unique_styles(all_styles) -> list:
+        return list(set(all_styles))
     
     def sortAndArrangeDistinctStyles(self, all_styles) -> tuple:
-        distinct_styles = list(set(all_styles))
+        distinct_styles = self.return_unique_styles(all_styles=all_styles)
         #check for same font over all fonts if it is same fonts then a different logic has to be font. 
         self.sorted_styles_on_size = sorted(distinct_styles, key= lambda item: (item[0], item[1]), reverse=True)
         #Even after sorting if it is the same size then we should look for other ways to find semantics.

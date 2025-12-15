@@ -73,6 +73,20 @@ class SimpleParser(BaseParser):
             print(f"Error: While creating semantic chunks: {e}")
             return None
         
+    def show_style_metadata(self):
+        all_blocks, all_styles = self.get_all_blocks_and_style_info()
+        self.parser = PDFParser(all_blocks)
+        self.parser.getMostCommonStyleTuple(all_styles=all_styles)
+        larger, same, smaller = self.parser.sortAndArrangeDistinctStyles(all_styles=all_styles)
+        
+        unique_styles = self.parser.return_unique_styles(all_styles=all_styles)
+
+        print("\n-------------------------------------------------\n")
+        print("Unique styles are:")
+        for style_tuple in unique_styles:
+            print(f'\n{style_tuple}')
+        print("\n-------------------------------------------------\n")
+                
     def parse(self):
         """
         Handles all operations by itself
@@ -91,6 +105,7 @@ if __name__ == '__main__':
     pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
     parser = SimpleParser(pdf_path=pdf_path)
     semantic_chunks = parser()
+    parser.show_style_metadata()
     for ix, chunk in semantic_chunks.items():
         keys = get_arranged_keys(chunk=chunk)
         for key in keys:
