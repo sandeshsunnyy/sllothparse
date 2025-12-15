@@ -87,8 +87,8 @@ class SimpleParser(BaseParser):
             print(f'\n{style_tuple}')
         print("\n-------------------------------------------------\n")
 
-        print(f"Styles larger than common font {self.parser.most_common}")
         if larger:
+            print(f"Styles larger than common font {self.parser.most_common}")
             for style_tuple in larger:
                 print(f'\n{style_tuple}')
             print("\n-------------------------------------------------\n")
@@ -97,9 +97,9 @@ class SimpleParser(BaseParser):
         for style_tuple in same:
             print(f'\n{style_tuple}')
         print("\n-------------------------------------------------\n")
-        
-        print(f"Styles smaller than common font {self.parser.most_common}")
+
         if smaller:
+            print(f"Styles smaller than common font {self.parser.most_common}")
             for style_tuple in smaller:
                 print(f'\n{style_tuple}')
             print("\n-------------------------------------------------\n")
