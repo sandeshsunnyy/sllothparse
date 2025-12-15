@@ -87,14 +87,17 @@ class PDFParser:
         self.tag_map = tag_map
 
     @staticmethod
-    def check_for_subheading(text: str) -> bool:
+    def check_for_subheading(text: str, font_style: str = None) -> bool:
 
         #regular expression for most common starting characters
         pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
         if pattern.match(text):
             return True
-        elif not pattern.match(text) and text.endswith(":"):
-            return True
+        elif not pattern.match(text):
+            if font_style.__contains__("Bold"):
+                return True
+            else:
+                return False
         else: 
             return False
 
@@ -115,7 +118,7 @@ class PDFParser:
                         style_tuple = (size, color, font)
                         tag = self.tag_map[style_tuple]
                         if tag[:2] == "sh":
-                            if not self.check_for_subheading(text=text):
+                            if not self.check_for_subheading(text=text, font_style=font):
                                 tag = "p"
                         #Tryning to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
                         #For bold and italics a different logic is needed. Like wraping the text in '*' or something
