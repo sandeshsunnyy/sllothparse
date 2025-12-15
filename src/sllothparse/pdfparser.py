@@ -104,7 +104,6 @@ class PDFParser:
         else: 
             return False
 
-
     def tagLines(self, all_blocks):
 
         tagged_lines = []
@@ -118,12 +117,8 @@ class PDFParser:
                         color = span["color"]
                         font = span["font"]
                         text = span["text"]
-                        style_tuple = (size, color, font)
-                        tag = self.tag_map[style_tuple]
-                        if tag[:2] == "sh":
-                            if not self.check_for_subheading(text=text, font_style=font):
-                                tag = "p"
-                        #Tryning to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
+                        style_tuple = (size, color, font)                    
+                        #Trying to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
                         #For bold and italics a different logic is needed. Like wraping the text in '*' or something
                         tuples.append(style_tuple)
                         line_content.append(text)
@@ -131,6 +126,9 @@ class PDFParser:
                     content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
                     common_tag = self.tag_map[common_tuple]
+                    if common_tag[:2] == "sh":
+                            if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
+                                common_tag = "p"
                     line_object = {
                         "tag" : common_tag,
                         "content": content,
