@@ -93,7 +93,7 @@ class PDFParser:
         pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
         if pattern.match(text):
             return True
-        elif not pattern.match(text) and (text.endswith(":") or not text.endswith('.')):
+        elif not pattern.match(text) and text.endswith(":"):
             return True
         else: 
             return False
