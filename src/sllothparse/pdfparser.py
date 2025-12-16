@@ -1,5 +1,6 @@
 import collections
 import re
+from sllothparse.utilities import partition_data_based_on_item_idx
 
 class PDFParser:
 
@@ -82,9 +83,52 @@ class PDFParser:
             for i, tuple in enumerate(self.smaller, 1):
                 tag_map[tuple] = "p"
         
-        print(tag_map)
-
         self.tag_map = tag_map
+
+    def create_single_tags(self, tuples: list[tuple], atr_idx: int):
+        """
+        Docstring for create_single_tags
+        
+        :param tuples: Description
+        :type tuples: list[tuple]
+        :param atr_idx: Description
+        :type atr_idx: int (Give 0, 1 or 2 for sorting and partitioning with size, color and font respectively.)
+        """
+        partitions = partition_data_based_on_item_idx(data=tuples, item_idx=atr_idx)
+        unique_among_partitions = []
+        for i in range(len(partitions)):
+            unique = list(set(partitions[i]))
+            unique_among_partitions.append(unique)
+        
+        headings = {}
+        for idx, unique in enumerate(unique_among_partitions, 1):
+            tag = f'h{idx}'
+            headings[tag] = unique
+        
+        headings_removed = dict([(value, key) for key, value in self.tag_map.items() if value[:1] != 'h'])
+        new_tag_map = {**headings, **headings_removed}
+        print(new_tag_map)
+
+
+    def redefine_tags(self, all_blocks):
+        headings = []
+        for block in all_blocks:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        size = span["size"]
+                        color = span["color"]
+                        font = span["font"]
+            
+                        style_tuple = (size, color, font)  
+                        tag = self.tag_map[style_tuple] 
+                        if tag[:1] == 'h':
+                            headings.append(style_tuple)
+                        else:
+                            continue
+        # We sort the styles according to key, then make partitions according to key. This would allow us to find common tuple in each size category and then assign values accordingly.
+        self.create_single_tags(tuples=headings, atr_idx=0)
+        
 
     @staticmethod
     def check_for_subheading(text: str, font_style: str = None) -> bool:
