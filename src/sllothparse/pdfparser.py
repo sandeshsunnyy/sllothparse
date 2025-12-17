@@ -184,7 +184,7 @@ class PDFParser:
                         tuples.append(style_tuple)
                         line_content.append(text)
                     content = ' '.join(line_content)
-                    content += '\n'
+                    #content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
                     common_tag = collections.Counter(tags).most_common(1)[0][0]
                     if common_tag[:2] == "sh":
