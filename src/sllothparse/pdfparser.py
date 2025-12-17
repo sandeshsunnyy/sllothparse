@@ -138,9 +138,7 @@ class PDFParser:
         delimiters = ('.', '?', '!', ';', ':')
         #regular expression for most common starting characters
         pattern = re.compile(r"^\s*((\d+(?:\.\d+)*)|[A-Za-z])[\.\)]")
-        if pattern.match(text):
-            print(f"Matched pattern is: {pattern.match(text).group(0)}"
-                  f"Text is: {text}")
+        if pattern.match(text) and not text.strip().endswith(delimiters):
             return True
         elif not pattern.match(text):
             if font_style.__contains__("Bold") and not text.strip().endswith(delimiters):
@@ -169,6 +167,7 @@ class PDFParser:
                 for line in block["lines"]:
                     tuples = []
                     line_content = []
+                    tags = []
                     for span in line["spans"]:
                         size = span["size"]
                         color = span["color"]
@@ -177,12 +176,17 @@ class PDFParser:
                         style_tuple = (size, color, font)                    
                         #Trying to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
                         #For bold and italics a different logic is needed. Like wraping the text in '*' or something
+                        tag = self.fetch_tag(style_tuple=style_tuple)
+                        if tag[:2] == "sh":
+                            if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
+                                tag = "p"
+                        tags.append(tag)
                         tuples.append(style_tuple)
                         line_content.append(text)
                     content = ' '.join(line_content)
                     content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
-                    common_tag = self.fetch_tag(style_tuple=common_tuple)
+                    common_tag = collections.Counter(tags).most_common(1)[0][0]
                     if common_tag[:2] == "sh":
                             if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
                                 common_tag = "p"
@@ -227,6 +231,11 @@ class PDFParser:
             'content' : paragraph
             }
         self.chunks = chunks
+        '''for chunk in chunks.values():
+            if chunk["content"].strip() and chunk["tag"][:2] == 'sh':
+                print("start")
+                print(f"\n{chunk["content"]}\n")
+                print("end")'''
         return chunks
 
     def createSemanticChunks(self):

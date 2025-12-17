@@ -112,7 +112,7 @@ class SimpleParser(BaseParser):
         self.parser.assignTagsToStyles() 
         self.parser.redefine_tags(all_blocks=all_blocks)
                 
-    def parse(self):
+    def parse(self) -> dict:
         """
         Handles all operations by itself
         """
