@@ -84,6 +84,7 @@ class PDFParser:
                 tag_map[tuple] = "p"
         
         self.tag_map = tag_map
+        self.redefine_tags(all_blocks=self.page_data)
 
     def create_single_tags(self, tuples: list[tuple], atr_idx: int):
         """
@@ -106,8 +107,9 @@ class PDFParser:
             headings[tag] = unique
         
         headings_removed = dict([(value, key) for key, value in self.tag_map.items() if value[:1] != 'h'])
-        new_tag_map = {**headings, **headings_removed}
-        print(new_tag_map)
+        list_transformed = dict([(key, [value]) for key, value in headings_removed.items()])
+        new_tag_map = {**headings, **list_transformed}
+        self.tag_map = new_tag_map
 
 
     def redefine_tags(self, all_blocks):
@@ -147,6 +149,17 @@ class PDFParser:
                 return False
         else: 
             return False
+        
+    def fetch_tag(self, style_tuple: tuple):
+
+        for tag, tuples in self.tag_map.items():
+            if style_tuple in tuples:
+                return tag
+            else:
+                continue
+        
+        print("No style tuple entry found.")
+        return None
 
     def tagLines(self, all_blocks):
 
@@ -169,7 +182,7 @@ class PDFParser:
                     content = ' '.join(line_content)
                     content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
-                    common_tag = self.tag_map[common_tuple]
+                    common_tag = self.fetch_tag(style_tuple=common_tuple)
                     if common_tag[:2] == "sh":
                             if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
                                 common_tag = "p"
@@ -218,7 +231,7 @@ class PDFParser:
 
     def createSemanticChunks(self):
         anchor_tuple = self.larger + self.same + self.smaller
-        anchor_tag = self.tag_map[anchor_tuple[0]]
+        anchor_tag = self.fetch_tag(style_tuple=anchor_tuple[0])
         reversed_list = list(self.chunks.keys())[::-1]
         all_semantic_chunks = {}
         semantic_chunks_no = 0
@@ -228,6 +241,8 @@ class PDFParser:
             chunk = self.chunks[key]
             tag = chunk['tag']
             content = chunk['content']
+            if not content.strip():
+                continue
             if tag == 'p':
                 if current_semantic_chunk:
                     same_topic.append(current_semantic_chunk)

@@ -131,12 +131,12 @@ if __name__ == '__main__':
     pdf_path = '/Users/sandeshsunny/Downloads/distribution sample.pdf'
     parser = SimpleParser(pdf_path=pdf_path)
     all_blocks, _ = parser.get_all_blocks_and_style_info()
-    parser.show_partitions()
+    #parser.show_partitions()
     semantic_chunks = parser()
-    '''parser.show_style_metadata()
+    #parser.show_style_metadata()
     for ix, chunk in semantic_chunks.items():
         keys = get_arranged_keys(chunk=chunk)
         for key in keys:
             print(f"{key} : {chunk[key]}")
-        print("\n")'''
+        print("\n")
 
