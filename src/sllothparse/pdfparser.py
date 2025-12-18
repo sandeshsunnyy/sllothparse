@@ -13,7 +13,7 @@ class PDFParser:
             if "lines" in block:
                 for line in block["lines"]:
                     for span in line["spans"]:
-                        size = span["size"]
+                        size = int(span["size"])
                         color = span["color"]
                         font = span["font"]
                         list_of_styles.append((size, color, font))
@@ -21,7 +21,7 @@ class PDFParser:
     
     @staticmethod
     def getCommonStyleTuple(style_tuples: list[tuple]):
-        return collections.Counter(style_tuples).most_common(1)[0][0]
+        return collections.Counter(style_tuples).most_common(1)[0][0] if style_tuples else None
     
     def getMostCommonStyleTuple(self, all_styles:list[tuple]):
         self.most_common = self.getCommonStyleTuple(style_tuples=all_styles) # do something for heading and sub-headings (quick-thought: count-based?)
@@ -118,7 +118,7 @@ class PDFParser:
             if "lines" in block:
                 for line in block["lines"]:
                     for span in line["spans"]:
-                        size = span["size"]
+                        size = int(span["size"])
                         color = span["color"]
                         font = span["font"]
             
@@ -156,11 +156,11 @@ class PDFParser:
             else:
                 continue
         
-        print("No style tuple entry found.")
+        print(f"No style tuple entry found for tuple: {style_tuple}")
         return None
 
     def tagLines(self, all_blocks):
-
+        
         tagged_lines = []
         for block in all_blocks:
             if "lines" in block:
@@ -169,7 +169,7 @@ class PDFParser:
                     line_content = []
                     tags = []
                     for span in line["spans"]:
-                        size = span["size"]
+                        size = int(span["size"])
                         color = span["color"]
                         font = span["font"]
                         text = span["text"]
@@ -177,25 +177,33 @@ class PDFParser:
                         #Trying to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
                         #For bold and italics a different logic is needed. Like wraping the text in '*' or something
                         tag = self.fetch_tag(style_tuple=style_tuple)
-                        if tag[:2] == "sh":
-                            if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
-                                tag = "p"
-                        tags.append(tag)
-                        tuples.append(style_tuple)
-                        line_content.append(text)
+                        if tag is None:
+                            print(f"Style tuple not found. Skipping tuple {style_tuple}.")
+                            continue
+                        else:
+                            if tag[:2] == "sh":
+                                if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
+                                    tag = "p"
+                            tags.append(tag)
+                            tuples.append(style_tuple)
+                            line_content.append(text)
                     content = ' '.join(line_content)
                     #content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
-                    common_tag = collections.Counter(tags).most_common(1)[0][0]
-                    if common_tag[:2] == "sh":
-                            if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
-                                common_tag = "p"
-                    line_object = {
-                        "tag" : common_tag,
-                        "content": content,
-                        "style_tuple": common_tuple
-                    }
-                    tagged_lines.append(line_object)
+                    if common_tuple is not None:
+                        common_tag = collections.Counter(tags).most_common(1)[0][0]
+                        if common_tag[:2] == "sh":
+                                if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
+                                    common_tag = "p"
+                        if content.strip():
+                            line_object = {
+                                "tag" : common_tag,
+                                "content": content,
+                                "style_tuple": common_tuple
+                            }
+                            tagged_lines.append(line_object)
+                    else:
+                        continue
         self.tagged_lines = tagged_lines
         return tagged_lines
                         
@@ -239,13 +247,20 @@ class PDFParser:
         return chunks
 
     def createSemanticChunks(self):
-        anchor_tuple = self.larger + self.same + self.smaller
-        anchor_tag = self.fetch_tag(style_tuple=anchor_tuple[0])
+        if 'h1' in self.tag_map.keys():
+            anchor_tag = 'h1'
+        elif 'sh1' in self.tag_map.keys():
+            anchor_tag = 'sh1'
+        else:
+            anchor_tag = 'p'
+        
         reversed_list = list(self.chunks.keys())[::-1]
         all_semantic_chunks = {}
         semantic_chunks_no = 0
+       
         same_topic = []
         current_semantic_chunk = {}
+        
         for key in reversed_list:
             chunk = self.chunks[key]
             tag = chunk['tag']

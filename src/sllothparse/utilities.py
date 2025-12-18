@@ -28,11 +28,13 @@ def get_arranged_keys(chunk: dict) -> list[str]:
 def partition_data_based_on_item_idx(data: list , item_idx: int):
     sorted_values = sorted(data, key=lambda item: item[item_idx], reverse=True)
     all_values_at_idx = sorted(list(set([item[item_idx] for item in data])))    #sorted might not be needed, but just for safety.
+
     partitions = [[] for _ in range(len(all_values_at_idx))]
 
     partition_idx = 0
     for i in range(0, len(data)-1): 
         if sorted_values[i][item_idx] != sorted_values[i+1][item_idx]:
+            partitions[partition_idx].append(sorted_values[i])
             partition_idx += 1
         else:
             partitions[partition_idx].append(sorted_values[i])

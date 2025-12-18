@@ -128,7 +128,7 @@ class SimpleParser(BaseParser):
 
 if __name__ == '__main__':
     #pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
-    pdf_path = '/Users/sandeshsunny/Downloads/distribution sample.pdf'
+    pdf_path = '/Users/sandeshsunny/Downloads/NUMBER SYSTEM.pdf'
     parser = SimpleParser(pdf_path=pdf_path)
     all_blocks, _ = parser.get_all_blocks_and_style_info()
     #parser.show_partitions()
