@@ -173,7 +173,7 @@ class PDFParser:
                         color = span["color"]
                         font = span["font"]
                         text = span["text"]
-                        style_tuple = (size, color, font)                    
+                        style_tuple = (size, color, font)              
                         #Trying to get one complete line in an object. Basically, what we did is instead of assigning tags to individul spans, we generalized it and made it into a single line logic. 
                         #For bold and italics a different logic is needed. Like wraping the text in '*' or something
                         tag = self.fetch_tag(style_tuple=style_tuple)
@@ -184,11 +184,11 @@ class PDFParser:
                             if tag[:2] == "sh":
                                 if not self.check_for_subheading(text=content, font_style=common_tuple[2]):
                                     tag = "p"
-                            tags.append(tag)
-                            tuples.append(style_tuple)
-                            line_content.append(text)
+                        tags.append(tag)
+                        tuples.append(style_tuple)
+                        line_content.append(text)
                     content = ' '.join(line_content)
-                    #content += '\n'
+                    content += '\n'
                     common_tuple = self.getCommonStyleTuple(style_tuples=tuples)
                     if common_tuple is not None:
                         common_tag = collections.Counter(tags).most_common(1)[0][0]
