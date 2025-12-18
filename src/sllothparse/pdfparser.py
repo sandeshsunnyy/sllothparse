@@ -19,6 +19,19 @@ class PDFParser:
                         list_of_styles.append((size, color, font))
         return list_of_styles
     
+    def show_spans(self):
+        for block in self.page_data:
+            if "lines" in block:
+                for line in block["lines"]:
+                    for span in line["spans"]:
+                        size = span["size"]
+                        color = span["color"]
+                        font = span["font"]
+                        style_tuple = (size, color, font)
+                        print(f'<s> content : {span["text"]} tuple : {style_tuple} </s>\n')
+                    print("\n One line ending here.\n")
+
+    
     @staticmethod
     def getCommonStyleTuple(style_tuples: list[tuple]):
         return collections.Counter(style_tuples).most_common(1)[0][0] if style_tuples else None

@@ -111,6 +111,11 @@ class SimpleParser(BaseParser):
         self.parser.sortAndArrangeDistinctStyles(all_styles=all_styles) #Even though it returns the results i don't need it here.
         self.parser.assignTagsToStyles() 
         self.parser.redefine_tags(all_blocks=all_blocks)
+
+    def show_all_spans(self):
+        all_blocks, _ = self.get_all_blocks_and_style_info()
+        self.parser = PDFParser(all_blocks)
+        self.parser.show_spans()
                 
     def parse(self) -> dict:
         """
@@ -130,7 +135,8 @@ if __name__ == '__main__':
     #pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
     pdf_path = '/Users/sandeshsunny/Downloads/NUMBER SYSTEM.pdf'
     parser = SimpleParser(pdf_path=pdf_path)
-    all_blocks, _ = parser.get_all_blocks_and_style_info()
+    parser.show_all_spans()
+    '''all_blocks, _ = parser.get_all_blocks_and_style_info()
     #parser.show_partitions()
     semantic_chunks = parser()
     #parser.show_style_metadata()
@@ -138,5 +144,5 @@ if __name__ == '__main__':
         keys = get_arranged_keys(chunk=chunk)
         for key in keys:
             print(f"{key} : {chunk[key]}")
-        print("\n")
+        print("\n")'''
 
