@@ -120,8 +120,19 @@ class PDFParser:
             headings[tag] = unique
         
         headings_removed = dict([(value, key) for key, value in self.tag_map.items() if value[:1] != 'h'])
-        list_transformed = dict([(key, [value]) for key, value in headings_removed.items()])
-        new_tag_map = {**headings, **list_transformed}
+        list_transformed = dict([(key, [value]) for key, value in headings_removed.items() if value != 'p']) # Because there will be multiple values for 'p'. The common font as well as the "smaller" fonts are 'p'. So when we redefine the tags, it gets overwritten.
+
+        paragraph_styles = []
+        for key, value in self.tag_map.items():
+            if value == 'p':
+                paragraph_styles.append(key)
+
+        paragraph_dict = {
+            "p" : paragraph_styles
+        }
+
+
+        new_tag_map = {**headings, **list_transformed, **paragraph_dict}
         self.tag_map = new_tag_map
 
 

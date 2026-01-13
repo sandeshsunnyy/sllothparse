@@ -110,7 +110,13 @@ class SimpleParser(BaseParser):
         self.parser.getMostCommonStyleTuple(all_styles=all_styles)
         self.parser.sortAndArrangeDistinctStyles(all_styles=all_styles) #Even though it returns the results i don't need it here.
         self.parser.assignTagsToStyles() 
-        self.parser.redefine_tags(all_blocks=all_blocks)
+
+    def show_tag_map_status(self):
+        all_blocks, all_styles = self.get_all_blocks_and_style_info()
+        self.parser = PDFParser(all_blocks)
+        self.parser.getMostCommonStyleTuple(all_styles=all_styles)
+        self.parser.sortAndArrangeDistinctStyles(all_styles=all_styles) #Even though it returns the results i don't need it here.
+        self.parser.assignTagsToStyles() 
 
     def show_all_spans(self):
         all_blocks, _ = self.get_all_blocks_and_style_info()
@@ -133,16 +139,19 @@ class SimpleParser(BaseParser):
 
 if __name__ == '__main__':
     #pdf_path = '/Users/sandeshsunny/Documents/Developement/GitHub/sllothparse/src/sllothparse/12 SEPTEMBER 2025.pdf'
-    pdf_path = '/Users/sandeshsunny/Downloads/NUMBER SYSTEM.pdf'
+    pdf_path = '/Users/sandeshsunny/Downloads/mains.pdf'
+    
     parser = SimpleParser(pdf_path=pdf_path)
-    parser.show_all_spans()
-    '''all_blocks, _ = parser.get_all_blocks_and_style_info()
+    #parser.show_all_spans()
+    all_blocks, _ = parser.get_all_blocks_and_style_info()
+    
     #parser.show_partitions()
     semantic_chunks = parser()
-    #parser.show_style_metadata()
+    #parser.show_partitions()
+    
     for ix, chunk in semantic_chunks.items():
         keys = get_arranged_keys(chunk=chunk)
         for key in keys:
             print(f"{key} : {chunk[key]}")
-        print("\n")'''
+        print("\n")
 
